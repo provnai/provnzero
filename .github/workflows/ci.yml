@@ -1,0 +1,75 @@
+name: ProvnZero CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        components: clippy, rustfmt
+
+    - name: Check Rust Formatting
+      working-directory: ./provnzero-proxy
+      run: cargo fmt -- --check
+
+    - name: Run Cargo Clippy
+      working-directory: ./provnzero-proxy
+      run: cargo clippy -- -D warnings
+
+    - name: Build Rust Proxy
+      working-directory: ./provnzero-proxy
+      run: cargo build
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: './provnzero-sdk/package-lock.json'
+
+    - name: Install SDK Dependencies
+      working-directory: ./provnzero-sdk
+      run: npm ci
+
+    - name: Build TypeScript SDK
+      working-directory: ./provnzero-sdk
+      run: npm run build
+
+    - name: Run Proxy in Background
+      working-directory: ./provnzero-proxy
+      run: cargo run &
+      
+    - name: Wait for Proxy to Start
+      run: sleep 5
+      
+    - name: Run SDK Tests
+      working-directory: ./provnzero-sdk
+      run: npm test
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install Python Test Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests pycryptodome pynacl urllib3 cryptography
+
+    - name: Run End-to-End Integration Tests
+      run: |
+        python test_suite.py
+        python benchmark.py

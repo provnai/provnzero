@@ -1,5 +1,4 @@
-[providers]
-rust = true
+providers = ["rust"]
 
 [variables]
 # Optimize the build profile for maximum performance and smallest binary size

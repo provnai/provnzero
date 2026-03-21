@@ -64,7 +64,20 @@ This validates three core proxy capabilities:
 
 ## Quick Start
 
-1. **Deploy the Proxy**: Follow the [Proxy README](./provnzero-proxy/README.md) to start the Rust server locally or on Railway.
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/YOUR-TEMPLATE-ID?referralCode=XXXX)
+
+### 🚂 1-Click Cloud Deployment (Railway)
+
+ProvnZero is natively containerized and configured for Railway. Clicking the button above will automatically provision a production-ready, zero-retention proxy instance with strict Axum rate limits pre-configured.
+
+**Required variables during setup:**
+* `OPENAI_API_KEY`: Required to authenticate outbound traffic.
+* *Optional*: Set `OPENAI_BASE_URL` if you wish to proxy to a different provider (e.g., Anthropic, Deepseek, locally hosted vLLM).
+
+Once deployed, point your client application (using the `provnzero-sdk`) to your new Railway `.up.railway.app` URL!
+
+### Manual Integration
+1. **Deploy the Proxy manually**: Follow the [Proxy README](./provnzero-proxy/README.md) to start the Rust server locally.
 2. **Integrate the SDK**: Follow the [SDK README](./provnzero-sdk/README.md) to initialize the client in your Node/TypeScript application.
 
 ## Community & Security

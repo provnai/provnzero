@@ -1,0 +1,20 @@
+[providers]
+rust = true
+
+[variables]
+# Optimize the build profile for maximum performance and smallest binary size
+CARGO_PROFILE_RELEASE_LTO = "true"
+CARGO_PROFILE_RELEASE_CODEGEN_UNITS = "1"
+# Ensure the tokio runtime can gracefully shut down during container swaps (No Zombie Connections)
+RUST_LOG = "provnzero=info,tower_http=info"
+
+[phases.build]
+# Compile the provnzero-proxy workspace strictly 
+cmds = ["cargo build --release -p provnzero-proxy"]
+
+[phases.setup]
+# Required for any openSSL capabilities (HPKE crypto may rely on native bindings depending on crate)
+aptPkgs = ["pkg-config", "libssl-dev"]
+
+[start]
+cmd = "./target/release/provnzero"

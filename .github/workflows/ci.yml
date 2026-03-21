@@ -67,7 +67,7 @@ jobs:
     - name: Install Python Test Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests pycryptodome pynacl urllib3 cryptography pyhpke
+        pip install requests pycryptodome pynacl urllib3 cryptography pyhpke aiohttp
 
     - name: Run End-to-End Integration Tests
       run: |

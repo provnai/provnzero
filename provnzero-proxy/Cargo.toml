@@ -2,6 +2,9 @@
 name = "provnzero-proxy"
 version = "0.1.0"
 edition = "2021"
+description = "A high-performance Zero Data Retention (ZDR) proxy for AI APIs."
+license = "Apache-2.0"
+repository = "https://github.com/provnai/provnzero"
 
 [dependencies]
 # Web framework

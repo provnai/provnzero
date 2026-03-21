@@ -8,6 +8,7 @@ pub struct VexReceipt {
     pub processed_at: String,
     pub provider: Option<String>,
     pub memory_zeroized: bool,
+    #[allow(dead_code)]
     pub statement: String,
     pub signature: Option<String>,
 }

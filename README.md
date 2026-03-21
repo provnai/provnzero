@@ -50,14 +50,12 @@ graph LR
 
 ## Real-World Validation
 
-ProvnZero has been rigorously validated against real-world LLM APIs using an automated integration suite. 
+In live testing against the **Groq API** (`llama3-8b-8192`), ProvnZero passed 100% of automated integration tests (12/12). 
 
-In live testing against the **Groq API** (`llama3-8b-8192`) via the universal `OPENAI_BASE_URL` adapter, ProvnZero successfully passed 100% of end-to-end integration tests (12/12). 
-
-This validation proves:
-1. **Cryptography**: HPKE encrypted payloads are seamlessly unwrapped and processed by standard cloud APIs.
-2. **Concurrency**: The proxy correctly routes parallel, rapid-fire inference requests perfectly under `tower-governor` limits.
-3. **ZDR Enforcement**: Memory is rigorously wiped (`zeroized`) after every single round-trip, emitting valid Ed25519 VEX receipts for the client.
+This validates three core proxy capabilities:
+1. **Cryptography**: HPKE sealed payloads unwrap seamlessly.
+2. **Concurrency**: Parallel, rapid-fire requests resolve perfectly under `tower-governor` rate limits.
+3. **ZDR Enforcement**: Memory is destroyed (`zeroized`) after every round-trip, yielding mathematically valid Ed25519 VEX receipts.
 
 ## Quick Start
 

@@ -15,6 +15,7 @@ impl SecureBuffer {
         Self { data }
     }
 
+    #[allow(dead_code)]
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
             data: Vec::with_capacity(capacity),

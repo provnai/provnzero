@@ -7,7 +7,7 @@
 [![npm version](https://img.shields.io/npm/v/provnzero-sdk.svg)](https://www.npmjs.com/package/provnzero-sdk)
 [![Rust](https://img.shields.io/badge/rust-v1.75+-brown.svg)]()
 [![TypeScript](https://img.shields.io/badge/typescript-v5.0+-blue.svg)]()
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/provnai/provnzero-proxy)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/quint3ns/provnzero-proxy)
 
 **ProvnZero** is a high-performance Zero Data Retention (ZDR) proxy for AI APIs. If you are building enterprise AI applications, sending sensitive data (PII, trade secrets, medical records) in plaintext to cloud LLMs is a massive liability. ProvnZero fundamentally solves this: we seal the data on the client, unwrap it securely in memory only at the moment of API transmission, and cryptographically shred it instantly afterward.
 

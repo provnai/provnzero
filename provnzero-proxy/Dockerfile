@@ -1,4 +1,4 @@
-FROM rust:1.85-bookworm as builder
+FROM rust:1.85-bookworm AS builder
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/
 
 WORKDIR /app
 
-COPY --from=builder /app/target/release/provnzero /app/
+COPY --from=builder /app/target/release/provnzero-proxy /app/
 
 ENV RUST_LOG=error
 ENV LOG_LEVEL=disabled
@@ -23,4 +23,4 @@ ENV RUST_BACKTRACE=0
 
 EXPOSE 3000
 
-CMD ["/app/provnzero"]
+CMD ["/app/provnzero-proxy"]

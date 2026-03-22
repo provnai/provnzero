@@ -51,7 +51,7 @@ tower_governor = "0.4"
 criterion = "0.5"
 
 [[bin]]
-name = "provnzero"
+name = "provnzero-proxy"
 path = "src/main.rs"
 
 [profile.release]

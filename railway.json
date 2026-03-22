@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "provnzero-proxy",
+    "startCommand": "./bin/provnzero-proxy",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
@@ -22,6 +22,14 @@
         "key": "OPENAI_API_KEY",
         "value": "",
         "description": "Required to authenticate outbound traffic"
+      },
+      {
+        "key": "NIXPACKS_CARGO_WORKSPACE",
+        "value": "provnzero-proxy"
+      },
+      {
+        "key": "NIXPACKS_RUST_BIN",
+        "value": "provnzero-proxy"
       }
     ]
   }

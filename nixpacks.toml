@@ -7,5 +7,9 @@ CARGO_PROFILE_RELEASE_CODEGEN_UNITS = "1"
 # Ensure the tokio runtime can gracefully shut down during container swaps (No Zombie Connections)
 RUST_LOG = "provnzero=info,tower_http=info"
 
+# Monorepo cues for Nixpacks
+NIXPACKS_CARGO_WORKSPACE = "provnzero-proxy"
+NIXPACKS_RUST_BIN = "provnzero-proxy"
+
 
 

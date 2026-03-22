@@ -64,7 +64,7 @@ This validates three core proxy capabilities:
 
 ## Quick Start
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/YOUR-TEMPLATE-ID?referralCode=XXXX)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/R6W8Zp?referralCode=4AXmAG&utm_medium=integration&utm_source=template&utm_campaign=generic)
 
 ### 🚂 1-Click Cloud Deployment (Railway)
 

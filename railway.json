@@ -16,20 +16,33 @@
       },
       {
         "key": "OPENAI_BASE_URL",
-        "value": "https://api.openai.com/v1"
+        "value": "https://api.openai.com/v1",
+        "description": "Base URL for OpenAI-compatible APIs (OpenAI, DeepSeek, OpenRouter, etc.)"
       },
       {
         "key": "OPENAI_API_KEY",
         "value": "",
-        "description": "Required to authenticate outbound traffic"
+        "description": "Required for OpenAI-compatible outgoing calls"
+      },
+      {
+        "key": "ANTHROPIC_API_KEY",
+        "value": "",
+        "description": "Optional: Enable Anthropic provider"
+      },
+      {
+        "key": "DEEPSEEK_API_KEY",
+        "value": "",
+        "description": "Optional: Enable DeepSeek provider"
       },
       {
         "key": "NIXPACKS_CARGO_WORKSPACE",
-        "value": "provnzero-proxy"
+        "value": "provnzero-proxy",
+        "description": "Internal: Targets the specific workspace member (Leave as is)"
       },
       {
         "key": "NIXPACKS_RUST_BIN",
-        "value": "provnzero-proxy"
+        "value": "provnzero-proxy",
+        "description": "Internal: Targets the specific binary name (Leave as is)"
       }
     ]
   }

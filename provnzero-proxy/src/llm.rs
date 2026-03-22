@@ -15,6 +15,13 @@ pub trait LlmClient: Send + Sync {
     fn provider_name(&self) -> &str;
 }
 
+#[derive(Serialize, Zeroize)]
+#[zeroize(drop)]
+struct ChatMessage {
+    role: String,
+    content: String,
+}
+
 pub struct OpenAIClient {
     client: Client,
     api_key: String,
@@ -26,7 +33,7 @@ pub struct OpenAIClient {
 #[zeroize(drop)]
 struct OpenAIRequest {
     model: String,
-    prompt: String,
+    messages: Vec<ChatMessage>,
     max_tokens: u32,
     temperature: f32,
 }
@@ -34,13 +41,19 @@ struct OpenAIRequest {
 #[derive(Deserialize, Debug, Zeroize)]
 #[zeroize(drop)]
 struct OpenAIResponse {
-    choices: Vec<Choice>,
+    choices: Vec<OpenAIChoice>,
 }
 
 #[derive(Deserialize, Debug, Zeroize)]
 #[zeroize(drop)]
-struct Choice {
-    text: String,
+struct OpenAIChoice {
+    message: OpenAIMessage,
+}
+
+#[derive(Deserialize, Debug, Zeroize)]
+#[zeroize(drop)]
+struct OpenAIMessage {
+    content: String,
 }
 
 impl OpenAIClient {
@@ -53,7 +66,7 @@ impl OpenAIClient {
         Self {
             client,
             api_key,
-            model: model.unwrap_or_else(|| "gpt-3.5-turbo".to_string()),
+            model: model.unwrap_or_else(|| "gpt-4o-mini".to_string()),
             base_url: base_url.unwrap_or_else(|| "https://api.openai.com/v1".to_string()),
         }
     }
@@ -65,18 +78,21 @@ impl LlmClient for OpenAIClient {
         &self,
         prompt: &str,
     ) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
-        let url = format!("{}/completions", self.base_url);
+        let url = format!("{}/chat/completions", self.base_url);
 
         let mut request = OpenAIRequest {
             model: self.model.clone(),
-            prompt: prompt.to_string(),
+            messages: vec![ChatMessage {
+                role: "user".to_string(),
+                content: prompt.to_string(),
+            }],
             max_tokens: 500,
             temperature: 0.7,
         };
 
         let response = self
             .client
-            .post(url)
+            .post(&url)
             .header("Authorization", format!("Bearer {}", self.api_key))
             .header("Content-Type", "application/json")
             .json(&request)
@@ -96,7 +112,7 @@ impl LlmClient for OpenAIClient {
         let text = result
             .choices
             .first()
-            .map(|c| c.text.clone())
+            .map(|c| c.message.content.clone())
             .unwrap_or_default();
 
         // Zeroize response structure
@@ -120,15 +136,21 @@ pub struct AnthropicClient {
 #[zeroize(drop)]
 struct AnthropicRequest {
     model: String,
-    prompt: String,
-    max_tokens_to_sample: u32,
+    messages: Vec<ChatMessage>,
+    max_tokens: u32,
     temperature: f32,
 }
 
 #[derive(Deserialize, Debug, Zeroize)]
 #[zeroize(drop)]
 struct AnthropicResponse {
-    completion: String,
+    content: Vec<AnthropicContent>,
+}
+
+#[derive(Deserialize, Debug, Zeroize)]
+#[zeroize(drop)]
+struct AnthropicContent {
+    text: String,
 }
 
 impl AnthropicClient {
@@ -141,7 +163,7 @@ impl AnthropicClient {
         Self {
             client,
             api_key,
-            model: model.unwrap_or_else(|| "claude-3-haiku-20240307".to_string()),
+            model: model.unwrap_or_else(|| "claude-3-5-haiku-latest".to_string()),
         }
     }
 }
@@ -152,13 +174,15 @@ impl LlmClient for AnthropicClient {
         &self,
         prompt: &str,
     ) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
-        let mut formatted_prompt = format!("\n\nHuman: {}\n\nAssistant:", prompt);
-        let url = "https://api.anthropic.com/v1/complete";
+        let url = "https://api.anthropic.com/v1/messages";
 
         let mut request = AnthropicRequest {
             model: self.model.clone(),
-            prompt: formatted_prompt.clone(),
-            max_tokens_to_sample: 500,
+            messages: vec![ChatMessage {
+                role: "user".to_string(),
+                content: prompt.to_string(),
+            }],
+            max_tokens: 500,
             temperature: 0.7,
         };
 
@@ -172,8 +196,7 @@ impl LlmClient for AnthropicClient {
             .send()
             .await?;
 
-        // Zeroize intermediate strings and request
-        formatted_prompt.zeroize();
+        // Zeroize request
         request.zeroize();
 
         if !response.status().is_success() {
@@ -183,7 +206,11 @@ impl LlmClient for AnthropicClient {
         }
 
         let mut result: AnthropicResponse = response.json().await?;
-        let text = result.completion.clone();
+        let text = result
+            .content
+            .first()
+            .map(|c| c.text.clone())
+            .unwrap_or_default();
 
         // Zeroize response structure
         result.zeroize();
@@ -200,21 +227,6 @@ pub struct DeepSeekClient {
     client: Client,
     api_key: String,
     model: String,
-}
-
-#[derive(Serialize, Zeroize)]
-#[zeroize(drop)]
-struct DeepSeekRequest {
-    model: String,
-    prompt: String,
-    max_tokens: u32,
-    temperature: f32,
-}
-
-#[derive(Deserialize, Debug, Zeroize)]
-#[zeroize(drop)]
-struct DeepSeekResponse {
-    choices: Vec<Choice>,
 }
 
 impl DeepSeekClient {
@@ -238,11 +250,14 @@ impl LlmClient for DeepSeekClient {
         &self,
         prompt: &str,
     ) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
-        let url = "https://api.deepseek.com/v1/completions";
+        let url = "https://api.deepseek.com/v1/chat/completions";
 
-        let mut request = DeepSeekRequest {
+        let mut request = OpenAIRequest {
             model: self.model.clone(),
-            prompt: prompt.to_string(),
+            messages: vec![ChatMessage {
+                role: "user".to_string(),
+                content: prompt.to_string(),
+            }],
             max_tokens: 500,
             temperature: 0.7,
         };
@@ -265,11 +280,11 @@ impl LlmClient for DeepSeekClient {
             return Err(format!("DeepSeek API error: {} - {}", status, body).into());
         }
 
-        let mut result: DeepSeekResponse = response.json().await?;
+        let mut result: OpenAIResponse = response.json().await?;
         let text = result
             .choices
             .first()
-            .map(|c| c.text.clone())
+            .map(|c| c.message.content.clone())
             .unwrap_or_default();
 
         // Zeroize response structure

@@ -1,6 +1,6 @@
 {
   "name": "provnzero-sdk",
-  "version": "0.1.1",
+  "version": "1.1.0-beta.1",
   "description": "ProvnZero ZDR Client SDK - X25519 + AES-256-GCM",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

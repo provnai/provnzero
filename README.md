@@ -2,7 +2,7 @@
 > **Zero knowledge. Zero retention. Zero compromise.**
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Version](https://img.shields.io/badge/version-1.0.0--beta-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.1.0--beta.1-blue.svg)]()
 [![CI](https://github.com/provnai/provnzero/actions/workflows/ci.yml/badge.svg)](https://github.com/provnai/provnzero/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/provnzero-sdk.svg)](https://www.npmjs.com/package/provnzero-sdk)
 [![Rust](https://img.shields.io/badge/rust-v1.75+-brown.svg)]()

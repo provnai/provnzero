@@ -269,7 +269,7 @@ async fn main() {
         }
     });
 
-    let governor_conf = Arc::new(
+    let global_governor_conf = Arc::new(
         GovernorConfigBuilder::default()
             .per_second(500)
             .burst_size(1000)
@@ -277,13 +277,26 @@ async fn main() {
             .unwrap(),
     );
 
+    let init_governor_conf = Arc::new(
+        GovernorConfigBuilder::default()
+            .per_second(5)
+            .burst_size(10)
+            .finish()
+            .unwrap(),
+    );
+
     let app = Router::new()
         .route("/health", get(handle_health))
-        .route("/v1/init", post(handle_init))
+        .route(
+            "/v1/init",
+            post(handle_init).layer(GovernorLayer {
+                config: init_governor_conf,
+            }),
+        )
         .route("/v1/completions", post(handle_request))
         .with_state(state)
         .layer(GovernorLayer {
-            config: governor_conf,
+            config: global_governor_conf,
         });
 
     let port = std::env::var("PORT")

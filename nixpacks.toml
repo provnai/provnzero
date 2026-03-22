@@ -8,8 +8,4 @@ CARGO_PROFILE_RELEASE_CODEGEN_UNITS = "1"
 RUST_LOG = "provnzero=info,tower_http=info"
 
 
-[phases.build]
-cmds = ["cargo build --release -p provnzero-proxy"]
 
-[start]
-cmd = "./target/release/provnzero-proxy"

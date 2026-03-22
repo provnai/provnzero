@@ -3,7 +3,7 @@ name: ProvnZero Release
 on:
   push:
     tags:
-      - 'v*.*.*'  # Triggers when you push a tag like "v1.0.0"
+      - 'v*'  # Supports v1.0.0, v1.1.0-beta.1, etc.
 
 jobs:
   publish-npm:

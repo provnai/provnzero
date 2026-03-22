@@ -280,7 +280,7 @@ async fn main() {
     let init_governor_conf = Arc::new(
         GovernorConfigBuilder::default()
             .per_second(5)
-            .burst_size(10)
+            .burst_size(20)
             .finish()
             .unwrap(),
     );

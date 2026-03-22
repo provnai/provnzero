@@ -22,16 +22,13 @@ jobs:
         components: clippy, rustfmt
 
     - name: Check Rust Formatting
-      working-directory: ./provnzero-proxy
       run: cargo fmt -- --check
 
     - name: Run Cargo Clippy
-      working-directory: ./provnzero-proxy
       run: cargo clippy -- -D warnings
 
     - name: Build Rust Proxy
-      working-directory: ./provnzero-proxy
-      run: cargo build
+      run: cargo build --package provnzero-proxy
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -49,11 +46,10 @@ jobs:
       run: npm run build
 
     - name: Run Proxy in Background
-      working-directory: ./provnzero-proxy
-      run: cargo run &
+      run: ./target/debug/provnzero-proxy &
       
     - name: Wait for Proxy to Start
-      run: sleep 5
+      run: sleep 10
       
     - name: Run SDK Tests
       working-directory: ./provnzero-sdk
